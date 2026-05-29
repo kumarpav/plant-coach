@@ -38,7 +38,7 @@
   .plant-card { display: flex; align-items: center; gap: 0.75rem; padding: 0.7rem 0.75rem; border-radius: 10px; cursor: pointer; transition: background 0.12s; margin-bottom: 0.3rem; border: 1px solid transparent; }
   .plant-card:hover { background: rgba(255,255,255,0.04); }
   .plant-card.active { background: rgba(109,191,126,0.1); border-color: rgba(109,191,126,0.25); }
-  .plant-thumb { width: 48px; height: 48px; border-radius: 8px; flex-shrink: 0; background: rgba(255,255,255,0.06); display: flex; align-items: center; justify-content: center; font-size: 1.4rem; overflow: hidden; }
+  .plant-thumb { width: 52px; height: 52px; border-radius: 10px; flex-shrink: 0; background: rgba(255,255,255,0.06); display: flex; align-items: center; justify-content: center; font-size: 1.4rem; overflow: hidden; box-shadow: 0 0 0 1px rgba(255,255,255,0.08); }
   .plant-thumb img { width: 100%; height: 100%; object-fit: cover; }
   .plant-card-info { flex: 1; min-width: 0; }
   .plant-card-name { font-weight: 700; font-size: 0.9rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -57,8 +57,9 @@
   .detail-empty p { font-size: 0.88rem; line-height: 1.7; }
 
   .detail-hero { position: relative; flex-shrink: 0; }
-  .detail-photo { width: 100%; height: 180px; object-fit: cover; display: block; }
-  .detail-photo-placeholder { width: 100%; height: 180px; background: linear-gradient(135deg, #1a3320, #0d1a10); display: flex; align-items: center; justify-content: center; font-size: 4rem; }
+  .detail-photo { width: 100%; height: 240px; object-fit: cover; display: block; }
+  .detail-photo-placeholder { width: 100%; height: 240px; background: linear-gradient(135deg, #1a3320, #0d1a10); display: flex; align-items: center; justify-content: center; font-size: 4rem; }
+  .detail-hero::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 80px; background: linear-gradient(to top, rgba(13,20,14,0.7), transparent); pointer-events: none; }
   .detail-hero-actions { position: absolute; top: 0.75rem; right: 0.75rem; display: flex; gap: 0.4rem; }
   .btn-icon { background: rgba(0,0,0,0.55); border: none; border-radius: 7px; padding: 0.35rem 0.6rem; font-size: 0.8rem; cursor: pointer; color: rgba(255,255,255,0.7); backdrop-filter: blur(4px); }
   .btn-icon:hover { background: rgba(0,0,0,0.75); color: #fff; }
@@ -260,119 +261,7 @@ let profileCreated = false;
 let plantsCache = [];
 let isDemoMode = false;
 let demoDismissed = false;
-let DEMO_PHOTOS = null;
 
-function buildDemoPhotos() {
-  function make(draw) {
-    const c = document.createElement('canvas');
-    c.width = 600; c.height = 400;
-    draw(c.getContext('2d'));
-    return c.toDataURL('image/jpeg', 0.82);
-  }
-  function ellLeaf(ctx, x, y, rx, ry, rot, fill, vein) {
-    ctx.save(); ctx.translate(x, y); ctx.rotate(rot);
-    ctx.fillStyle = fill; ctx.beginPath();
-    ctx.ellipse(0, 0, rx, ry, 0, 0, Math.PI * 2); ctx.fill();
-    if (vein) {
-      ctx.strokeStyle = vein; ctx.lineWidth = 1.5;
-      ctx.beginPath(); ctx.moveTo(0, ry * 0.7); ctx.lineTo(0, -ry * 0.75); ctx.stroke();
-    }
-    ctx.restore();
-  }
-  function drawPot(ctx, cx, top, w, h, main, rim) {
-    ctx.fillStyle = main;
-    ctx.beginPath();
-    ctx.moveTo(cx - w * 0.55, top); ctx.lineTo(cx + w * 0.55, top);
-    ctx.lineTo(cx + w * 0.42, top + h); ctx.lineTo(cx - w * 0.42, top + h);
-    ctx.closePath(); ctx.fill();
-    ctx.fillStyle = rim; ctx.fillRect(cx - w * 0.6, top - 8, w * 1.2, 12);
-  }
-
-  // Frank — Fiddle Leaf Fig
-  const d1 = make(ctx => {
-    const bg = ctx.createLinearGradient(0, 0, 0, 400);
-    bg.addColorStop(0, '#f3ece0'); bg.addColorStop(1, '#ddd2ba');
-    ctx.fillStyle = bg; ctx.fillRect(0, 0, 600, 400);
-    ctx.fillStyle = '#c8b590'; ctx.fillRect(0, 310, 600, 90);
-    drawPot(ctx, 300, 256, 96, 58, '#c97b40', '#b56830');
-    ctx.strokeStyle = '#5a3010'; ctx.lineWidth = 13;
-    ctx.beginPath(); ctx.moveTo(300, 258); ctx.lineTo(300, 155); ctx.stroke();
-    [[-0.22, 300, 132, 58, 92], [0.38, 252, 158, 52, 84],
-     [0.12, 348, 148, 54, 88], [-0.48, 270, 178, 46, 72],
-     [0.30, 326, 168, 50, 80]].forEach(([r, x, y, rx, ry]) =>
-      ellLeaf(ctx, x, y, rx, ry, r, '#263f22', '#172b14')
-    );
-  });
-
-  // Petra — Pothos
-  const d2 = make(ctx => {
-    ctx.fillStyle = '#f5f0e8'; ctx.fillRect(0, 0, 600, 400);
-    ctx.fillStyle = '#e8e0d0'; ctx.fillRect(0, 290, 600, 110);
-    ctx.fillStyle = '#d8cfc0'; ctx.fillRect(0, 290, 600, 8);
-    drawPot(ctx, 300, 242, 80, 52, '#e4d8c0', '#d0c4a8');
-    [[-0.15, 300, 210, 32, 24], [0.40, 340, 228, 28, 22], [-0.30, 260, 232, 30, 23],
-     [0.10, 318, 255, 28, 21], [-0.20, 278, 258, 30, 22], [0.55, 358, 270, 26, 20],
-     [-0.45, 242, 272, 28, 21], [0.15, 305, 278, 26, 20]].forEach(([r, x, y, rx, ry]) =>
-      ellLeaf(ctx, x, y, rx, ry, r, '#4a8040', '#8ab830')
-    );
-  });
-
-  // Ziggy — ZZ Plant
-  const d3 = make(ctx => {
-    const bg = ctx.createLinearGradient(0, 0, 0, 400);
-    bg.addColorStop(0, '#1c1c28'); bg.addColorStop(1, '#0e0e18');
-    ctx.fillStyle = bg; ctx.fillRect(0, 0, 600, 400);
-    ctx.fillStyle = '#242430'; ctx.fillRect(0, 315, 600, 85);
-    drawPot(ctx, 300, 262, 88, 56, '#38384a', '#2a2a38');
-    [[-40, -0.55], [0, 0], [40, 0.55]].forEach(([offset, tilt]) => {
-      ctx.strokeStyle = '#1a3820'; ctx.lineWidth = 4;
-      ctx.beginPath(); ctx.moveTo(300 + offset, 262);
-      ctx.quadraticCurveTo(300 + offset + Math.sin(tilt) * 80, 190, 300 + offset + Math.sin(tilt) * 155, 105);
-      ctx.stroke();
-      for (let i = 1; i <= 6; i++) {
-        const t = i / 7;
-        const lx = 300 + offset + Math.sin(tilt) * 155 * t;
-        const ly = 262 - t * 157;
-        ellLeaf(ctx, lx + Math.cos(tilt) * 22 * (i % 2 === 0 ? 1 : -1), ly, 12, 19, tilt, '#1e4820', null);
-      }
-    });
-  });
-
-  // Monty — Monstera
-  const d4 = make(ctx => {
-    const bg = ctx.createLinearGradient(0, 0, 600, 400);
-    bg.addColorStop(0, '#e0f0d8'); bg.addColorStop(1, '#c0ddb8');
-    ctx.fillStyle = bg; ctx.fillRect(0, 0, 600, 400);
-    ctx.fillStyle = '#b0d0a0'; ctx.fillRect(0, 315, 600, 85);
-    for (let i = 0; i < 6; i++) {
-      ctx.fillStyle = i % 2 === 0 ? '#c4a058' : '#b89040';
-      ctx.beginPath();
-      ctx.moveTo(238 + i * 20, 262); ctx.lineTo(258 + i * 20, 262);
-      ctx.lineTo(252 + i * 18, 320); ctx.lineTo(234 + i * 18, 320);
-      ctx.closePath(); ctx.fill();
-    }
-    ctx.fillStyle = '#b89040'; ctx.fillRect(232, 255, 124, 11);
-    [[255, 198, -0.30], [348, 188, 0.25]].forEach(([lx, ly, rot]) => {
-      const oc = document.createElement('canvas');
-      oc.width = 200; oc.height = 200;
-      const oc2 = oc.getContext('2d');
-      oc2.translate(100, 100);
-      oc2.fillStyle = '#2d6828';
-      oc2.beginPath(); oc2.ellipse(0, 0, 78, 60, 0, 0, Math.PI * 2); oc2.fill();
-      oc2.globalCompositeOperation = 'destination-out';
-      [[-52, 8, 0.5, 18, 12], [52, -4, -0.4, 18, 12], [-20, -44, 0.7, 14, 10]].forEach(([hx, hy, hr, hrx, hry]) => {
-        oc2.beginPath(); oc2.ellipse(hx, hy, hrx, hry, hr, 0, Math.PI * 2); oc2.fill();
-      });
-      oc2.globalCompositeOperation = 'source-over';
-      oc2.strokeStyle = '#1a4018'; oc2.lineWidth = 2;
-      oc2.beginPath(); oc2.moveTo(0, 50); oc2.lineTo(0, -55); oc2.stroke();
-      ctx.save(); ctx.translate(lx, ly); ctx.rotate(rot);
-      ctx.drawImage(oc, -100, -100); ctx.restore();
-    });
-  });
-
-  return { d1, d2, d3, d4 };
-}
 
 const OBS_TYPES = [
   { key: 'water',  icon: '💧', label: 'Watered' },
@@ -388,16 +277,16 @@ const HEALTH_COLORS = { 5: '#4caf7d', 4: '#7abf5a', 3: '#d4c44a', 2: '#d4874a', 
 // ── Demo data ─────────────────────────────────────────────────────────────────
 const DEMO_PLANTS = [
   { id: 'd1', name: 'Frank the Fig', species: 'Ficus lyrata', location: 'Living room corner',
-    light_level: 'Bright indirect', acquired: '2025-11-15', notes: 'Bought at the farmers market', photo_data: '',
+    light_level: 'Bright indirect', acquired: '2025-11-15', notes: 'Bought at the farmers market', photo_data: 'https://images.unsplash.com/photo-1545239705-1564e58b9e4a?w=800&h=600&fit=crop&auto=format',
     last_observation: { timestamp: '2026-05-10T09:00:00', obs_type: 'growth', health_rating: 4 } },
   { id: 'd2', name: 'Petra', species: 'Epipremnum aureum', location: 'Bathroom shelf',
-    light_level: 'Medium', acquired: '2025-09-03', notes: 'Golden pothos — very forgiving', photo_data: '',
+    light_level: 'Medium', acquired: '2025-09-03', notes: 'Golden pothos — very forgiving', photo_data: 'https://images.unsplash.com/photo-1596724878582-76f1a8fdc24f?w=800&h=600&fit=crop&auto=format',
     last_observation: { timestamp: '2026-04-12T10:00:00', obs_type: 'growth', health_rating: 5 } },
   { id: 'd3', name: 'Ziggy', species: 'Zamioculcas zamiifolia', location: 'Office desk',
-    light_level: 'Low', acquired: '2026-01-20', notes: '', photo_data: '',
+    light_level: 'Low', acquired: '2026-01-20', notes: '', photo_data: 'https://images.unsplash.com/photo-1501004318641-b39e6451bec6?w=800&h=600&fit=crop&auto=format',
     last_observation: { timestamp: '2026-05-05T08:00:00', obs_type: 'note', health_rating: 4 } },
   { id: 'd4', name: 'Monty', species: 'Monstera deliciosa', location: 'Bedroom window',
-    light_level: 'Bright indirect', acquired: '2025-06-10', notes: 'My oldest plant', photo_data: '',
+    light_level: 'Bright indirect', acquired: '2025-06-10', notes: 'My oldest plant', photo_data: 'https://images.unsplash.com/photo-1585598117002-9fb152e67dbf?w=800&h=600&fit=crop&auto=format',
     last_observation: { timestamp: '2026-05-20T11:00:00', obs_type: 'water', health_rating: 5 } },
 ];
 
@@ -441,8 +330,6 @@ const DEMO_OBSERVATIONS = {
 
 function enterDemo() {
   isDemoMode = true;
-  if (!DEMO_PHOTOS) DEMO_PHOTOS = buildDemoPhotos();
-  DEMO_PLANTS.forEach(p => { p.photo_data = DEMO_PHOTOS[p.id]; });
   document.getElementById('demo-banner').style.display = 'flex';
   document.getElementById('stat-plants').textContent = `${DEMO_PLANTS.length} plants`;
   document.getElementById('stat-obs').textContent = `${Object.values(DEMO_OBSERVATIONS).flat().length} observations`;
