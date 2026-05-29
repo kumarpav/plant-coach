@@ -6,10 +6,10 @@
 <title>Plant Coach</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: system-ui, sans-serif; background: #0d1a10; min-height: 100vh; color: #e8f0ea; }
+  body { font-family: system-ui, sans-serif; background: #0d1a10; color: #e8f0ea; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
 
   /* ── Header ── */
-  header { background: rgba(0,0,0,0.35); padding: 0.9rem 1.5rem; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.07); position: sticky; top: 0; z-index: 10; }
+  header { background: rgba(0,0,0,0.35); padding: 0.9rem 1.5rem; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.07); flex-shrink: 0; }
   .header-left { display: flex; align-items: baseline; gap: 0.75rem; }
   header h1 { font-size: 1.35rem; font-weight: 800; letter-spacing: -0.5px; color: #6dbf7e; }
   header .tagline { font-size: 0.78rem; color: rgba(255,255,255,0.3); }
@@ -20,8 +20,15 @@
   .btn-profile { background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.13); color: rgba(255,255,255,0.6); border-radius: 8px; font-size: 0.82rem; font-weight: 600; cursor: pointer; padding: 0.4rem 0.9rem; }
   .btn-profile:hover { background: rgba(255,255,255,0.12); color: #fff; }
 
+  /* ── Demo banner ── */
+  .demo-banner { display: none; flex-shrink: 0; background: linear-gradient(135deg, rgba(109,191,126,0.14), rgba(109,191,126,0.05)); border-bottom: 1px solid rgba(109,191,126,0.28); padding: 0.75rem 1.5rem; align-items: center; justify-content: space-between; gap: 1rem; }
+  .demo-banner-text { font-size: 0.82rem; color: rgba(255,255,255,0.72); line-height: 1.5; }
+  .demo-banner-text strong { color: #7abf8a; font-weight: 700; }
+  .btn-demo-start { background: #5a9e6b; color: #0d1a10; border: none; border-radius: 7px; padding: 0.38rem 0.95rem; font-size: 0.82rem; font-weight: 700; cursor: pointer; white-space: nowrap; flex-shrink: 0; }
+  .btn-demo-start:hover { background: #6dbf7e; }
+
   /* ── Layout ── */
-  .layout { display: grid; grid-template-columns: 300px 1fr; height: calc(100vh - 53px); overflow: hidden; }
+  .layout { display: grid; grid-template-columns: 300px 1fr; flex: 1; overflow: hidden; }
 
   /* ── Plant list panel ── */
   .plant-list-panel { background: rgba(0,0,0,0.2); border-right: 1px solid rgba(255,255,255,0.07); display: flex; flex-direction: column; overflow: hidden; }
@@ -31,7 +38,7 @@
   .plant-card { display: flex; align-items: center; gap: 0.75rem; padding: 0.7rem 0.75rem; border-radius: 10px; cursor: pointer; transition: background 0.12s; margin-bottom: 0.3rem; border: 1px solid transparent; }
   .plant-card:hover { background: rgba(255,255,255,0.04); }
   .plant-card.active { background: rgba(109,191,126,0.1); border-color: rgba(109,191,126,0.25); }
-  .plant-thumb { width: 48px; height: 48px; border-radius: 8px; object-fit: cover; flex-shrink: 0; background: rgba(255,255,255,0.06); display: flex; align-items: center; justify-content: center; font-size: 1.4rem; overflow: hidden; }
+  .plant-thumb { width: 48px; height: 48px; border-radius: 8px; flex-shrink: 0; background: rgba(255,255,255,0.06); display: flex; align-items: center; justify-content: center; font-size: 1.4rem; overflow: hidden; }
   .plant-thumb img { width: 100%; height: 100%; object-fit: cover; }
   .plant-card-info { flex: 1; min-width: 0; }
   .plant-card-name { font-weight: 700; font-size: 0.9rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -45,12 +52,10 @@
 
   /* ── Plant detail panel ── */
   .plant-detail-panel { display: flex; flex-direction: column; overflow: hidden; }
-
   .detail-empty { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; color: rgba(255,255,255,0.2); text-align: center; gap: 0.5rem; }
   .detail-empty .icon { font-size: 3rem; }
   .detail-empty p { font-size: 0.88rem; line-height: 1.7; }
 
-  /* Plant detail header */
   .detail-hero { position: relative; flex-shrink: 0; }
   .detail-photo { width: 100%; height: 180px; object-fit: cover; display: block; }
   .detail-photo-placeholder { width: 100%; height: 180px; background: linear-gradient(135deg, #1a3320, #0d1a10); display: flex; align-items: center; justify-content: center; font-size: 4rem; }
@@ -98,7 +103,7 @@
   .obs-type-tag { display: flex; align-items: center; gap: 0.4rem; font-size: 0.8rem; font-weight: 600; }
   .obs-meta { display: flex; align-items: center; gap: 0.5rem; }
   .obs-date { font-size: 0.7rem; color: rgba(255,255,255,0.28); }
-  .obs-health { font-size: 0.7rem; color: rgba(255,255,255,0.35); }
+  .obs-health { font-size: 0.7rem; }
   .obs-notes-text { font-size: 0.82rem; color: rgba(255,255,255,0.55); margin-bottom: 0.35rem; font-style: italic; }
   .obs-advice { background: rgba(109,191,126,0.08); border-left: 2px solid #5a9e6b; border-radius: 0 6px 6px 0; padding: 0.5rem 0.7rem; margin-top: 0.35rem; }
   .obs-advice-label { font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.8px; color: #6dbf7e; font-weight: 700; margin-bottom: 0.2rem; }
@@ -106,6 +111,7 @@
   .obs-delete { background: none; border: none; color: rgba(255,255,255,0.15); cursor: pointer; font-size: 0.72rem; padding: 0.1rem 0.3rem; }
   .obs-delete:hover { color: #e74c3c; }
   .obs-empty { text-align: center; color: rgba(255,255,255,0.2); padding: 2rem 1rem; font-size: 0.85rem; }
+  .demo-label { font-size: 0.7rem; color: rgba(255,255,255,0.2); font-style: italic; }
 
   /* ── Modals ── */
   .modal-bg { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.72); z-index: 200; align-items: center; justify-content: center; }
@@ -136,10 +142,12 @@
 
   /* Mobile */
   @media (max-width: 720px) {
-    .layout { grid-template-columns: 1fr; height: auto; overflow: visible; }
+    body { height: auto; overflow: auto; }
+    .layout { grid-template-columns: 1fr; flex: none; }
     .plant-list-panel { height: auto; max-height: 40vh; border-right: none; border-bottom: 1px solid rgba(255,255,255,0.07); }
-    .plant-detail-panel { height: calc(100vh - 53px - 40vh); min-height: 400px; }
+    .plant-detail-panel { height: 70vh; min-height: 400px; }
     .stat-pill { display: none; }
+    .demo-banner { flex-direction: column; align-items: flex-start; }
   }
 </style>
 </head>
@@ -158,14 +166,18 @@
   </div>
 </header>
 
+<div class="demo-banner" id="demo-banner">
+  <div class="demo-banner-text">
+    <strong>Welcome to Plant Coach!</strong> This is sample data — explore 4 plants going through real diagnosis journeys, from a struggling fiddle leaf fig to a thriving monstera. Click any plant to see its history and advice.
+  </div>
+  <button class="btn-demo-start" onclick="dismissDemo()">Start tracking my plants</button>
+</div>
+
 <div class="layout">
-  <!-- Left: plant list -->
   <div class="plant-list-panel">
     <div class="plant-list-header" id="list-header">My plants</div>
     <div class="plant-list-scroll" id="plant-list"></div>
   </div>
-
-  <!-- Right: plant detail -->
   <div class="plant-detail-panel" id="detail-panel">
     <div class="detail-empty">
       <div class="icon">🪴</div>
@@ -246,6 +258,8 @@ let selectedHealth = 3;
 let addPlantPhotoData = '';
 let profileCreated = false;
 let plantsCache = [];
+let isDemoMode = false;
+let demoDismissed = false;
 
 const OBS_TYPES = [
   { key: 'water',  icon: '💧', label: 'Watered' },
@@ -257,6 +271,83 @@ const OBS_TYPES = [
 ];
 
 const HEALTH_COLORS = { 5: '#4caf7d', 4: '#7abf5a', 3: '#d4c44a', 2: '#d4874a', 1: '#d44a4a' };
+
+// ── Demo data ─────────────────────────────────────────────────────────────────
+const DEMO_PLANTS = [
+  { id: 'd1', name: 'Frank the Fig', species: 'Ficus lyrata', location: 'Living room corner',
+    light_level: 'Bright indirect', acquired: '2025-11-15', notes: 'Bought at the farmers market', photo_data: '',
+    last_observation: { timestamp: '2026-05-10T09:00:00', obs_type: 'growth', health_rating: 4 } },
+  { id: 'd2', name: 'Petra', species: 'Epipremnum aureum', location: 'Bathroom shelf',
+    light_level: 'Medium', acquired: '2025-09-03', notes: 'Golden pothos — very forgiving', photo_data: '',
+    last_observation: { timestamp: '2026-04-12T10:00:00', obs_type: 'growth', health_rating: 5 } },
+  { id: 'd3', name: 'Ziggy', species: 'Zamioculcas zamiifolia', location: 'Office desk',
+    light_level: 'Low', acquired: '2026-01-20', notes: '', photo_data: '',
+    last_observation: { timestamp: '2026-05-05T08:00:00', obs_type: 'note', health_rating: 4 } },
+  { id: 'd4', name: 'Monty', species: 'Monstera deliciosa', location: 'Bedroom window',
+    light_level: 'Bright indirect', acquired: '2025-06-10', notes: 'My oldest plant', photo_data: '',
+    last_observation: { timestamp: '2026-05-20T11:00:00', obs_type: 'water', health_rating: 5 } },
+];
+
+const DEMO_OBSERVATIONS = {
+  'd1': [
+    { id: 'do3', obs_type: 'growth', health_rating: 4, timestamp: '2026-05-10T09:00:00',
+      notes: 'New leaf unfurling at the top! First new growth in months.',
+      advice: `1. New growth is the best possible sign — it means Frank has recovered from the overwatering stress and is actively thriving. Well done!\n2. Give a diluted liquid fertiliser now (half strength) to support the new leaf as it develops and hardens off.\n3. Rotate the pot a quarter turn every few weeks so all sides get equal light and growth stays balanced.\n\nYou've completely turned this around. That new unfurling leaf is your reward for the patience you showed during the dry-out period!` },
+    { id: 'do2', obs_type: 'water', health_rating: 3, timestamp: '2026-04-05T10:00:00',
+      notes: 'Held off watering for 3 weeks. Brown spots have not spread. Soil finally dried out.',
+      advice: `1. Great restraint — the spots not spreading is a very good sign that root rot has not taken hold.\n2. Resume watering only when the top 2 inches of soil are dry — typically every 7–10 days in summer, 14–21 days in winter. Never on a fixed schedule.\n3. Wipe the leaves with a damp cloth to remove dust — fiddle leaf figs absorb light through their large leaves and dust significantly reduces this.\n\nYou are over the worst of it. Consistent watering habits from here and Frank should bounce back beautifully!` },
+    { id: 'do1', obs_type: 'issue', health_rating: 2, timestamp: '2026-03-15T08:30:00',
+      notes: 'Large brown spots appearing on lower leaves, edges going crispy. Soil has been staying wet for a long time.',
+      advice: `1. Stop watering immediately and let the soil dry out completely — fiddle leaf figs are highly susceptible to root rot, and wet soil for extended periods is the main culprit. Brown spots from the bottom confirm overwatering.\n2. Check the roots by gently removing Frank from the pot — healthy roots are white or tan, rotted roots are brown and mushy. If you find rot, trim affected roots and repot into fresh well-draining soil.\n3. Ensure the pot has drainage holes and never let it sit in standing water. When you do water again, wait until the top 2 inches are dry.\n\nThis is very fixable — fiddle leaf figs are dramatic but resilient. You caught it early!` },
+  ],
+  'd2': [
+    { id: 'do5', obs_type: 'growth', health_rating: 5, timestamp: '2026-04-12T10:00:00',
+      notes: 'Moved closer to the window. Three new leaves in two weeks! Colour is much deeper green now.',
+      advice: `1. Three new leaves in two weeks is exceptional growth — the light change clearly made a huge difference. Keep Petra in this spot.\n2. This is a great time to propagate — snip a vine just below a node (the little bump where leaves attach), pop it in water, and you will have a new plant in 2–3 weeks.\n3. Petra in brighter light will drink more frequently — water when the top inch of soil is dry rather than on a fixed schedule.\n\nPetra is absolutely thriving! You have found her sweet spot — this is what a happy pothos looks like.` },
+    { id: 'do4', obs_type: 'note', health_rating: 3, timestamp: '2026-03-20T09:00:00',
+      notes: 'Stems getting very long and leggy, leaves getting smaller towards the ends. A bit pale.',
+      advice: `1. Leggy growth with pale, small leaves is a classic sign of insufficient light — pothos tolerate low light but get stretchy reaching for more. Move Petra 1–2 feet closer to a window if possible.\n2. Prune the longest vines back by a third — this encourages bushier growth, and you can propagate the cuttings in water for new plants.\n3. The bathroom can be quite dim — even a grow light for a few hours a day would make a noticeable difference if moving her is not an option.\n\nPothos are incredibly adaptable — a small light upgrade will have Petra looking lush within a few weeks!` },
+  ],
+  'd3': [
+    { id: 'do9', obs_type: 'note', health_rating: 4, timestamp: '2026-05-05T08:00:00',
+      notes: 'No more white spots visible after two weeks of treatment. New stem coming up from the soil!',
+      advice: `1. New growth from the base is a fantastic sign — ZZ plants produce new stems from underground rhizomes, and seeing one emerge means the plant is fully recovered and back in growth mode.\n2. Do a final preventative neem oil spray and then return to your normal care routine.\n3. Continue monitoring weekly for the next month, especially in the joints between stems and leaves where mealybugs like to hide.\n\nZiggy is officially pest-free and putting out new growth — that is a complete win. You handled that really well!` },
+    { id: 'do8', obs_type: 'feed', health_rating: 3, timestamp: '2026-04-18T11:00:00',
+      notes: 'Applied neem oil spray twice. White spots reduced significantly — only 2 visible now.',
+      advice: `1. Excellent progress — going from 5-6 spots to 2 is a clear sign the treatment is working. Do one more neem oil application this week to catch any remaining eggs.\n2. Keep Ziggy isolated for another 2 weeks even if you see no more bugs — mealybug eggs can be nearly invisible and hatch after about a week.\n3. Do not overwater during recovery — ZZ plants store water in their rhizomes, and the plant's defences are already taxed.\n\nYou are nearly there! One more week of diligence and Ziggy should be completely clear.` },
+    { id: 'do7', obs_type: 'issue', health_rating: 2, timestamp: '2026-04-01T09:30:00',
+      notes: 'White fluffy spots on the stems and undersides of leaves. Noticed maybe 5 or 6 of them.',
+      advice: `1. Those white fluffy spots are mealybugs — act quickly before they spread. Dip a cotton swab in 70% isopropyl alcohol and dab each one directly to kill on contact.\n2. Mix a neem oil spray (1 tsp neem oil + 1 tsp dish soap + 1L water) and coat all leaf surfaces and stems, focusing on undersides and joints. Repeat every 5–7 days for 3 weeks.\n3. Isolate Ziggy from all other plants immediately — mealybugs spread easily through contact.\n\nCaught early like this, mealybugs are very manageable. Consistent treatment over the next few weeks is key — do not stop after the first application!` },
+  ],
+  'd4': [
+    { id: 'do10', obs_type: 'water', health_rating: 5, timestamp: '2026-05-20T11:00:00',
+      notes: 'Huge new leaf unfurled this week — biggest one yet with beautiful fenestrations. Aerial roots growing strong.',
+      advice: `1. A large fenestrated leaf and active aerial roots are signs of a very healthy, well-established monstera — you are doing everything right. Do not change anything that is working.\n2. If the aerial roots are getting long, you can tuck them into the soil to absorb water, or tie them to a moss pole for extra support and humidity.\n3. Feed monthly with a balanced liquid fertiliser (half strength) while it is actively growing — this will fuel those large new leaves.\n\nMonty is in peak condition. These are the moments that make all the plant parenting worthwhile — enjoy that beautiful new leaf!` },
+  ],
+};
+
+function enterDemo() {
+  isDemoMode = true;
+  document.getElementById('demo-banner').style.display = 'flex';
+  document.getElementById('stat-plants').textContent = `${DEMO_PLANTS.length} plants`;
+  document.getElementById('stat-obs').textContent = `${Object.values(DEMO_OBSERVATIONS).flat().length} observations`;
+  document.getElementById('list-header').textContent = `My plants (${DEMO_PLANTS.length})`;
+  renderPlantList(DEMO_PLANTS);
+  selectPlant('d1');
+}
+
+function dismissDemo() {
+  isDemoMode = false;
+  demoDismissed = true;
+  document.getElementById('demo-banner').style.display = 'none';
+  selectedPlantId = null;
+  document.getElementById('detail-panel').innerHTML = `
+    <div class="detail-empty">
+      <div class="icon">🪴</div>
+      <p>Add your first plant to get started.<br>Click <strong style="color:#6dbf7e">+ Add plant</strong> above.</p>
+    </div>`;
+  loadPlants();
+}
 
 // ── Profile button ────────────────────────────────────────────────────────────
 function initProfileBtn() {
@@ -349,6 +440,11 @@ async function submitAddPlant() {
   if (res.ok) {
     const plant = await res.json();
     closeAddPlant();
+    if (isDemoMode) {
+      isDemoMode = false;
+      demoDismissed = true;
+      document.getElementById('demo-banner').style.display = 'none';
+    }
     await loadPlants();
     selectPlant(plant.id);
   } else { alert('Error adding plant.'); }
@@ -361,10 +457,19 @@ async function loadPlants() {
     apiFetch('/stats').then(r => r.json()),
   ]);
   plantsCache = plants;
+
+  if (plants.length === 0 && !demoDismissed) {
+    enterDemo();
+    return;
+  }
+
   document.getElementById('stat-plants').textContent = `${stats.plants} plant${stats.plants !== 1 ? 's' : ''}`;
   document.getElementById('stat-obs').textContent = `${stats.observations} observations`;
   document.getElementById('list-header').textContent = `My plants (${plants.length})`;
+  renderPlantList(plants);
+}
 
+function renderPlantList(plants) {
   const el = document.getElementById('plant-list');
   if (!plants.length) {
     el.innerHTML = `<div class="empty-list"><div class="icon">🌱</div>No plants yet.<br>Add your first one to<br>start tracking.</div>`;
@@ -377,7 +482,7 @@ async function loadPlants() {
     const thumb = p.photo_data
       ? `<div class="plant-thumb"><img src="${p.photo_data}" alt=""></div>`
       : `<div class="plant-thumb">🌿</div>`;
-    return `<div class="plant-card${selectedPlantId === p.id ? ' active' : ''}" onclick="selectPlant(${p.id})">
+    return `<div class="plant-card${selectedPlantId == p.id ? ' active' : ''}" data-id="${p.id}" onclick="selectPlant('${p.id}')">
       ${thumb}
       <div class="plant-card-info">
         <div class="plant-card-name">${p.name}</div>
@@ -396,10 +501,16 @@ async function selectPlant(id) {
   selectedPlantId = id;
   selectedObsType = 'water';
   selectedHealth = 3;
-  document.querySelectorAll('.plant-card').forEach(c => c.classList.remove('active'));
   document.querySelectorAll('.plant-card').forEach(c => {
-    if (c.getAttribute('onclick') === `selectPlant(${id})`) c.classList.add('active');
+    c.classList.toggle('active', c.dataset.id == id);
   });
+
+  if (isDemoMode) {
+    const plant = DEMO_PLANTS.find(p => p.id === id);
+    const observations = DEMO_OBSERVATIONS[id] || [];
+    renderPlantDetail(plant, observations);
+    return;
+  }
 
   const [plant, observations] = await Promise.all([
     apiFetch(`/plants/${id}`).then(r => r.json()),
@@ -431,12 +542,15 @@ function renderPlantDetail(plant, observations) {
     ? observations.map(o => obsItemHtml(o)).join('')
     : '<div class="obs-empty">No observations yet.<br>Log your first one above.</div>';
 
+  const heroActions = isDemoMode ? '' :
+    `<div class="detail-hero-actions">
+       <button class="btn-icon" onclick="confirmDeletePlant('${plant.id}')" title="Delete plant">🗑</button>
+     </div>`;
+
   document.getElementById('detail-panel').innerHTML = `
     <div class="detail-hero">
       ${photo}
-      <div class="detail-hero-actions">
-        <button class="btn-icon" onclick="confirmDeletePlant(${plant.id})" title="Delete plant">🗑</button>
-      </div>
+      ${heroActions}
     </div>
     <div class="detail-info">
       <div class="detail-name">${plant.name}</div>
@@ -445,13 +559,13 @@ function renderPlantDetail(plant, observations) {
       ${plant.notes ? `<div style="font-size:0.78rem;color:rgba(255,255,255,0.35);margin-top:0.4rem;font-style:italic">${plant.notes}</div>` : ''}
     </div>
     <div class="obs-form">
-      <div class="obs-form-title">Log an observation</div>
+      <div class="obs-form-title">${isDemoMode ? 'Log an observation (sample — add your own plants to track)' : 'Log an observation'}</div>
       <div class="obs-type-row">${typeButtons}</div>
       <div class="obs-form-row">
         <textarea class="obs-notes" id="obs-notes" placeholder="What did you notice? Be specific — the more detail, the better the advice." rows="2"></textarea>
         <div class="obs-right">
           <div class="star-row" id="health-stars">${starRow}</div>
-          <button class="btn-log-obs" id="obs-btn" onclick="logObservation(${plant.id})">
+          <button class="btn-log-obs" id="obs-btn" onclick="logObservation('${plant.id}')">
             <div class="spinner" id="obs-spinner"></div>
             <span id="obs-btn-text">Log + get advice</span>
           </button>
@@ -472,13 +586,16 @@ function renderPlantDetail(plant, observations) {
 function obsItemHtml(o) {
   const t = OBS_TYPES.find(x => x.key === o.obs_type) || { icon: '📝', label: o.obs_type };
   const health = HEALTH_COLORS[o.health_rating] || '#888';
+  const deleteBtn = isDemoMode
+    ? `<span class="demo-label">sample</span>`
+    : `<button class="obs-delete" onclick="deleteObservation(${o.id})">✕</button>`;
   return `<div class="obs-item">
     <div class="obs-header">
       <span class="obs-type-tag">${t.icon} ${t.label}</span>
       <div class="obs-meta">
         <span class="obs-health" style="color:${health}">★ ${o.health_rating}/5</span>
         <span class="obs-date">${timeAgo(o.timestamp)}</span>
-        <button class="obs-delete" onclick="deleteObservation(${o.id})">✕</button>
+        ${deleteBtn}
       </div>
     </div>
     ${o.notes ? `<div class="obs-notes-text">"${o.notes}"</div>` : ''}
@@ -501,6 +618,11 @@ function setHealth(n) {
 }
 
 async function logObservation(plantId) {
+  if (isDemoMode) {
+    document.getElementById('advice-bubble-text').textContent = 'This is sample data. Click "Start tracking my plants" above to add your own plants and get real coaching advice!';
+    document.getElementById('advice-bubble').classList.add('show');
+    return;
+  }
   const notes = document.getElementById('obs-notes').value.trim();
   const btn = document.getElementById('obs-btn');
   btn.disabled = true;
@@ -537,8 +659,8 @@ async function deleteObservation(id) {
 }
 
 async function confirmDeletePlant(id) {
-  const plant = plantsCache.find(p => p.id === id);
-  if (!confirm(`Delete ${plant?.name || 'this plant'} and all its observations? This can't be undone.`)) return;
+  const plant = plantsCache.find(p => p.id == id);
+  if (!confirm(`Delete ${plant?.name || 'this plant'} and all its observations? This cannot be undone.`)) return;
   await apiFetch(`/plants/${id}`, { method: 'DELETE' });
   selectedPlantId = null;
   document.getElementById('detail-panel').innerHTML = `
