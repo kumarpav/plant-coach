@@ -14,7 +14,7 @@ from models import Plant, Observation, UserConfig
 
 Base.metadata.create_all(bind=engine)
 
-app = FastAPI(title="Plant Coach")
+app = FastAPI(title="Plant Daddy")
 app.mount("/static", StaticFiles(directory="public"), name="static")
 
 _anthropic = anthropic.Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
