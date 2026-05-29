@@ -1,4 +1,4 @@
-app = 'plant-coach-pavan'
+app = 'plant-coach'
 primary_region = 'sjc'
 
 [build]
